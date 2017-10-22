@@ -1,4 +1,4 @@
-function Inicio(){
+﻿function Inicio(){
 
 	/*
 	Botones de Inicio en el index.html
@@ -67,6 +67,18 @@ function Inicio(){
      });
 
 
+	$("#opciones a.empleado").click(function(e){
+     	e.preventDefault(); //evita el evento nativo que es clic normal
+        url = $(this).attr("href"); //de este hipervinculo saque el atributo href
+
+        $.post( url, function(data) {
+        		if(url!="#")
+        			$("#contenedor").removeClass("hide");
+        			$("#contenedor").addClass("show");
+        			$("#titulo").html("Listado Empleados");
+                	$("#contenido" ).html(data); //carga en contenido
+        });
+     });
 
 
 
@@ -159,6 +171,40 @@ Botones de Borrar icono basurero
 		}
 	});
 
+	$("#contenido").on("click","a.borrarSucursal",function(){
+		//Recupera datos del formulario
+		var codigo = $(this).attr("codigo");
+		if ( confirm("¿Realmente desea borrar el registro?")){		
+			$.ajax({
+        		method: "post",
+            	url: "./php/sucursal/controladorSucursal.php",
+            	data: {codigo: codigo, accion:'borrar'},
+            	dataType: "html"
+        	})  .done(function( result ) {
+        		$("#titulo").html("Listado Sucursal");
+        		$( "#contenido" ).load("./php/sucursal/index.php");
+        	});
+
+		}
+	});
+
+	$("#contenido").on("click","a.borrarEmpleado",function(){
+		//Recupera datos del formulario
+		var codigo = $(this).attr("codigo");
+		if ( confirm("¿Realmente desea borrar el registro?")){		
+			$.ajax({
+        		method: "post",
+            	url: "./php/empleados/controladorEmpleado.php",
+            	data: {codigo: codigo, accion:'borrar'},
+            	dataType: "html"
+        	})  .done(function( result ) {
+        		$("#titulo").html("Listado Empleado");
+        		$( "#contenido" ).load("./php/empleados/index.php");
+        	});
+
+		}
+	});
+
 
 
 
@@ -238,6 +284,19 @@ Botones editar icono lapiz
         	});
 	});	
 
+        $("#contenido").on("click","a.editarEmpleado",function(){
+		$("#titulo").html("Editar Sucursal");
+		//Recupera datos del fromulario
+		var codigo = $(this).attr("codigo");
+		$.ajax({
+			type:"post",
+			url:"./php/empleados/editarEmpleado.php",
+			data:"codigo=" + codigo,
+			dataType:"html"
+        	}) .done(function( result ) {
+        		$("#contenido").html(result);
+        	});
+	});	
 
 
 
@@ -307,11 +366,6 @@ Botones actualizar
 	});
 
 
-
-
-
-
-
 		$("#contenido").on("click","button#actualizarSucursal",function(){
 		
 		$("#titulo").html("Listado Sucursal");
@@ -325,6 +379,21 @@ Botones actualizar
         		$( "#contenido" ).load("./php/sucursal/index.php");
         	});
 	});
+
+		$("#contenido").on("click","button#actualizarEmpleado",function(){
+		
+		$("#titulo").html("Listado Empleados");
+        var datos=$("#fempleado").serialize();
+            $.ajax({
+			type:"post",
+			url:"./php/empleados/controladorEmpleado.php",
+			data: datos,
+			dataType:"html"
+        	}) .done(function( result ) {
+        		$( "#contenido" ).load("./php/empleados/index.php");
+        	});
+	});
+
 
 
 /*
@@ -367,6 +436,13 @@ Botones nuevos
 		$("#titulo").html("Nueva Sucursal");
 		$( "#contenido" ).load("./php/sucursal/nuevoSucursal.php");	
 	})
+
+
+	$("#contenido").on("click","button#nuevoEmpleado",function(){
+		$("#titulo").html("Nueva Sucursal");
+		$( "#contenido" ).load("./php/empleados/nuevoEmpleado.php");	
+	})
+
 
 /*
 Final Botones nuevos
@@ -453,6 +529,24 @@ Botones grabar
 			success:function(result){
 				$("#titulo").html("Listado Sucursal");
 				$("#contenido" ).load("./php/sucursal/index.php");
+			}
+		})
+	});
+
+
+
+		$("#contenido").on("click","button#grabarEmpleado",function(){
+		
+		var datos=$("#fempleado").serialize();//sobre el formulario mete todos los controles en una variable
+	
+		$.ajax({
+			type:"post",
+			url:"./php/empleados/controladorEmpleado.php",
+			data:datos,
+			dataType:"html",
+			success:function(result){
+				$("#titulo").html("Listado empleados");
+				$("#contenido" ).load("./php/empleados/index.php");
 			}
 		})
 	});
