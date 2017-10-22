@@ -1,0 +1,16 @@
+
+.jumbotron{
+	/*background: white;*/
+	color: black;
+}
+.jumbotron .titulo-blog{
+	font-size: 50px;
+
+}
+.img-circle{
+	width: 200px;
+	height: 200px;
+}
+.footer{
+	margin: 20px;
+}
