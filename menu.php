@@ -103,16 +103,13 @@
                         <!--Administrador-->
                         <?php if($_SESSION['tipo_usuario']==1) { ?>
                         <ul>
-                            <li><a class="fa fa-sitemap" href="#" role="button">  Roles</a></li>
+                            <li><a class="fa fa-sitemap rol" href="php/rol/index.php" role="button">  Roles</a></li>
                             <li><a class="fa fa-building-o ciudad" href="php/ciudad/index.php" role="button"> Ciudades</a></li>
                             <li><a class="fa fa-briefcase pais" href="php/pais/index.php" role="button"> Pais</a></li>
-                            <li><a class="fa fa-suitcase empresa" href="php/empresa/index.php" role="button"> Empresa</a></li>
-                            <li><a class="fa fa-location-arrow sucursal" href="php/sucursal/index.php" role="button"> Sucursales</a></li>                            
-                            <li><a class="fa fa-users" href="#" role="button"> Empleados</a></li>
-                            <li><a class="fa fa-gears" href="#" role="button"> Procesos</a></li>
-                            <li><a class="fa fa-crosshairs" href="#" role="button"> Seleccion</a></li>
+                            <li><a class="fa fa-suitcase empresa" href="php/empresa/index.php" role="button"> Empresa</a></li>                            
                             <li><a class="fa fa-file-text-o" href="#" role="button"> Contratos</a></li>
                             <li><a class="fa fa-arrow-circle-down" href="#" role="button"> Informes</a></li>
+
                         </ul>
                         <?php } ?>
 
@@ -130,6 +127,7 @@
                             <li><a class="fa fa-location-arrow sucursal" href="php/sucursal/index.php" role="button"> Sucursales</a></li>                            
                             <li><a class="fa fa-users" href="#" role="button"> Empleados</a></li>                            
                             <li><a class="fa fa-gears" href="#" role="button"> Procesos</a></li>
+                            <li><a class="fa fa-arrow-circle-down" href="#" role="button"> Proveedores</a></li>
                         </ul>
                         <?php } ?>
 

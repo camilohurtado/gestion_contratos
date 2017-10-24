@@ -78,7 +78,22 @@
         			$("#titulo").html("Listado Empleados");
                 	$("#contenido" ).html(data); //carga en contenido
         });
-     });
+	 });
+	 
+	 //Gestion de roles
+	 $("#opciones a.rol").click(function(e){
+		e.preventDefault(); //evita el evento nativo que es clic normal
+	   url = $(this).attr("href"); //de este hipervinculo saque el atributo href
+
+	   $.post( url, function(data) {
+			   if(url!="#")
+				   $("#contenedor").removeClass("hide");
+				   $("#contenedor").addClass("show");
+				   $("#titulo").html("Listado de roles de usuario");
+				   $("#contenido" ).html(data); //carga en contenido
+				   
+	   });
+	});
 
 
 
@@ -205,7 +220,44 @@ Botones de Borrar icono basurero
 		}
 	});
 
+	
+	// Inactivar  rol
+	$("#contenido").on("click","a.inactivarRol",function(){
+		//Recupera datos del formulario
+		var codigo = $(this).attr("codigo");
+		if ( confirm("¿Realmente desea inactivar el registro?")){		
+			$.ajax({
+        		method: "post",
+            	url: "./php/rol/rol_controlador.php",
+            	data: {codigo: codigo, accion:'borrar', estado : 0},
+            	dataType: "html"
+        	})  .done(function( result ) {
+        		$("#titulo").html("Listado de roles de usuario");
+				$( "#contenido" ).load("./php/rol/index.php");
+				
+        	});
 
+		}
+	});
+
+	//Activacion de rol
+	$("#contenido").on("click","a.activarRol",function(){
+		//Recupera datos del formulario
+		var codigo = $(this).attr("codigo");
+		if ( confirm("¿Realmente desea activar el registro?")){		
+			$.ajax({
+        		method: "post",
+            	url: "./php/rol/rol_controlador.php",
+            	data: {codigo: codigo, accion:'borrar', estado : 1},
+            	dataType: "html"
+        	})  .done(function( result ) {
+				$("#titulo").html("Listado de roles de usuario");
+				$( "#contenido" ).load("./php/rol/index.php");
+				
+        	});
+
+		}
+	});
 
 
 /*
@@ -444,6 +496,12 @@ Botones nuevos
 	})
 
 
+	$("#contenido").on("click","button#nuevoRol",function(){
+		$("#titulo").html("Nuevo rol");
+		$( "#contenido" ).load("./php/rol/rol_nuevo.php");	
+	})
+
+
 /*
 Final Botones nuevos
 */
@@ -547,6 +605,24 @@ Botones grabar
 			success:function(result){
 				$("#titulo").html("Listado empleados");
 				$("#contenido" ).load("./php/empleados/index.php");
+			}
+		})
+	});
+
+
+	
+	$("#contenido").on("click","button#grabarRol",function(){
+		
+		var datos=$("#frol").serialize();//sobre el formulario mete todos los controles en una variable
+	
+		$.ajax({
+			type:"post",
+			url:"./php/rol/rol_controlador.php",
+			data:datos,
+			dataType:"html",
+			success:function(result){
+				$("#titulo").html("Listado de roles");
+				$("#contenido" ).load("./php/rol/index.php");
 			}
 		})
 	});
