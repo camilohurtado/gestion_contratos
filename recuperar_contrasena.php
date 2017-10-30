@@ -2,27 +2,19 @@
 	
 	require 'funcs/conexion.php';
 	require 'funcs/funcs.php';
-	
-	$errors = array();
+    
+    session_start();
+
+    $errors = array();
+    $mensaje = '';
 	
 	if(!empty($_POST))
 	{
-		$nombre = $mysqli->real_escape_string($_POST['nombre']);	
+		
 		$usuario = $mysqli->real_escape_string($_POST['usuario']);	
-		$password = $mysqli->real_escape_string($_POST['password']);	
-		$con_password = $mysqli->real_escape_string($_POST['con_password']);	
 		$email = $mysqli->real_escape_string($_POST['email']);	
-		$captcha = $mysqli->real_escape_string($_POST['g-recaptcha-response']);
 		
-		$activo = 0;
-		$tipo_usuario = 2;
-		$secret = '6LeG1DUUAAAAAHjPnikj8pHq0gKBj2niqpFXWhXR';//'6LcpODMUAAAAAMNsXQ3No1-ir7h4OJCbRxbHqteC';
-		
-		if(!$captcha){
-			$errors[] = "Por favor verifica el captcha";
-		}
-		
-		if(isNull($nombre, $usuario, $password, $con_password, $email))
+		if(isNullField($usuario) || isNullField($email))
 		{
 			$errors[] = "Debe llenar todos los campos";
 		}
@@ -32,63 +24,36 @@
 			$errors[] = "Dirección de correo inválida";
 		}
 		
-		if(!validaPassword($password, $con_password))
+		if(!usuarioExiste($usuario))
 		{
-			$errors[] = "Las contraseñas no coinciden";
+			$errors[] = "El nombre de usuario $usuario no existe";
 		}
 		
-		if(usuarioExiste($usuario))
+		if(!emailExiste($email))
 		{
-			$errors[] = "El nombre de usuario $usuario ya existe";
-		}
-		
-		if(emailExiste($email))
-		{
-			$errors[] = "El correo electronico $email ya existe";
+			$errors[] = "El correo electronico $email no existe";
 		}
 		
 		if(count($errors) == 0)
 		{
-            $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret&response=$captcha");
+			//$response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret&response=$captcha");
+			
+			//$arr = json_decode($response, TRUE);
             
-            //$curlData = curl_init();
+            $_SESSION['usuario_camb'] = $usuario;
+            $_SESSION['email_camb'] = $email;
 
-            /*curl_setopt_array($curlData,
-                            [
-                                CURLOPT_URL => 'https://www.google.com/recaptcha/api/siteverify',
-                                CURLOPT_POST => true,
-                                CURLOPT_POSTFIELDS => [
-                                    'secret' => $secret,
-                                    'response' => $captcha,
-                                    'remoteip' => $_SERVER["SERVER_NAME"]//$_SERVER['REMOTE_ADDR']
-                                ],
-                                CURLOPT_RETURNTRANSFER => true
-                            ]);
-
-            $response = curl_exec($curlData);
-            curl_close($curlData);*/
-                            
-			$arr = json_decode($response, TRUE);
-            
-			if($arr['success'])
+			if(true)//($arr['success'])
 			{
 				
-				$pass_hash = hashPassword($password);
-				$token = generateToken();
-				
-				$registro = registraUsuario($usuario, $pass_hash, $nombre, $email, $activo, $token, $tipo_usuario);
-				
-				if($registro > 0 )
-				{
+					$url = 'http://'.$_SERVER["SERVER_NAME"].'/apps/gestion_contratos/nueva_contrasena.php';
 					
-					$url = 'http://'.$_SERVER["SERVER_NAME"].'/gestion_contratos/activar.php?id='.$registro.'&val='.$token;
+					$asunto = 'Recuperar contraseña - Sistema de Usuarios';
+					$cuerpo = "Estimado usuario: <br /><br />Para continuar con el proceso de recuperación, es indispensable de click en el siguiente enlace:  <a href='$url'>Recuperar contraseña</a>";
 					
-					$asunto = 'Activar Cuenta - Sistema de Usuarios';
-					$cuerpo = "Estimado $nombre: <br /><br />Para continuar con el proceso de registro, es indispensable de click en la siguiente liga <a href='$url'>Activar Cuenta</a>";
+					if(enviarEmail($email, $usuario, $asunto, $cuerpo)){
 					
-					if(enviarEmail($email, $nombre, $asunto, $cuerpo)){
-					
-					echo "Para terminar el proceso de registro siga las instrucciones que le hemos enviado la direccion de correo electronico: $email";
+					echo "Para terminar el proceso de cambio de contraseña, siga las instrucciones que le hemos enviado la direccion de correo electronico: $email";
 					
 					echo "<br><a href='index.php' >Iniciar Sesion</a>";
 					exit;
@@ -96,14 +61,8 @@
 					} else {
 						$erros[] = "Error al enviar Email";
 					}
-					
-					} else {
-					$errors[] = "Error al Registrar";
-				}
 				
-				} else {
-				$errors[] = 'Error al comprobar Captcha :' .$arr['success'] . ' - hostname: '.$arr['hostname'] ;
-			}
+				} 
 			
 		}
 		
@@ -121,7 +80,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Inicio</title>
+    <title>Recuperación contraseña</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <!-- Favicon -->
@@ -145,7 +104,7 @@
     <script src="assets/js/respond.min.js"></script>
     <![endif]-->
 	
-	
+	<script src='https://www.google.com/recaptcha/api.js'></script>
 
 </head>
 
@@ -157,46 +116,21 @@
                 <div class="panel panel-primary animated flipInY">
                     <div class="panel-heading">
                         <h3 class="panel-title">     
-                           Registro
+                           CUENTA
+                           <div>
                            <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="index.php">Iniciar Sesi&oacute;n</a></div>
+                           </div>
                         </h3>      
                     </div>
                     <div class="panel-body">
-                       <p> Login.</p>
-                        <form class="form-horizontal" role="form" action="<?php $_SERVER['PHP_SELF'] ?>" method="POST" autocomplete="off">
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="nombre" required autofocus>
-                                    <i class="fa fa-user"></i>
-                                </div>
-                            </div>
-
-							
+                    
+                    <form class="form-horizontal" role="form" action="<?php $_SERVER['PHP_SELF'] ?>" method="POST" autocomplete="off">
                             <div class="form-group">
                                 <div class="col-md-12">
                                     <input type="text" class="form-control" id="usuario" name="usuario" placeholder="usuario" required autofocus>
                                     <i class="fa fa-user"></i>
                                 </div>
                             </div>
-
-
-
-                            <div class="form-group">
-                               <div class="col-md-12">
-                                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-                                    <i class="fa fa-lock"></i>
-                                </div>
-                            </div>
-
-
-
-                            <div class="form-group">
-                               <div class="col-md-12">
-                                    <input type="password" class="form-control" id="con_password" name="con_password" placeholder="Confirmar Password" required>
-                                    <i class="fa fa-key"></i>
-                                </div>
-                            </div>
-
 
                             <div class="form-group">
                                <div class="col-md-12">
@@ -205,20 +139,9 @@
                                 </div>
                             </div>
 
-
-
-                            <div class="form-group">
-                               <div class="col-md-1">
-									<!--<div class="g-recaptcha" data-sitekey="6LcpODMUAAAAAHcGVqzlp_zm5spCYgTY3Q7CSKlk"></div>-->
-                                    <div class="g-recaptcha" data-sitekey="6LeG1DUUAAAAAN0imOmhxkmMniqEo1kGOH0qUnIk"></div>
-                                </div>
-                            </div>
-
-
-
                             <div class="form-group">
                                <div class="col-md-12">
-                                    <input type="submit" class="btn btn-primary btn-block" value="Registrar" >
+                                    <input type="submit" class="btn btn-primary btn-block" value="Enviar" >
                                </div>
                             </div>
                         </form>
@@ -245,7 +168,6 @@
         ga('send', 'pageview');
 
 </script>
-<script src='https://www.google.com/recaptcha/api.js'></script>
 </body>
 
 </html>

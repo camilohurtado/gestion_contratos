@@ -75,7 +75,7 @@
 
 
 				<td align='center'>
-                    <a class="btn btn-primary editarSucursal" href="#" data-toggle="tooltip" codigo="<?php echo $fila['id_sucursal'] ?>">
+                    <a class="btn btn-primary editarRol" href="#" data-toggle="tooltip" codigo="<?php echo $fila['id_tipo'] ?>">
                         <i class="fa fa-pencil"  aria-hidden="false"></i>
                         <span class="sr-only">Edit</span>
                     </a> 

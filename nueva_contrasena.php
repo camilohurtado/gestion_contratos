@@ -1,29 +1,84 @@
 <?php
-
-    session_start();
-    require 'funcs/conexion.php';
+	
+	require 'funcs/conexion.php';
     require 'funcs/funcs.php';
-
-    $errors = array();
-
-    if (!empty($_POST)) {
-        
-        $usuario = $mysqli->real_escape_string($_POST['usuario']);
-        $password = $mysqli->real_escape_string($_POST['password']);
-
-        if (isNullLogin($usuario, $password)) {
-            $errors[] = "Debe llenar todos los campos";
-        }
-
-        $errors[] = login($usuario, $password);
-    }
-
     
+    session_start();
+    
+    $errors = array();
+    
+    $usuario = $_SESSION['usuario_camb'];
+    $email = $_SESSION['email_camb'];
+
+    $id = '';
+    $id_tipo = '';
+    $token = '';
+    $cambio_password = '';
+    $mensaje = '';
+
+	if(!empty($_POST))
+	{
+		$password = $mysqli->real_escape_string($_POST['password']);	
+		$con_password = $mysqli->real_escape_string($_POST['con_password']);	
+		
+			
+		if(!validaPassword($password, $con_password))
+		{
+			$errors[] = "Las contraseñas no coinciden";
+		}
+		
+		
+		if(count($errors) == 0)
+		{
+
+				$pass_hash = hashPassword($password);
+                
+                //Consulta de informacion de usuario que va a cambiar la contraseña
+                $stmt = $mysqli->prepare("SELECT id, id_tipo, token FROM usuarios WHERE usuario = ? || correo = ? LIMIT 1");
+                $stmt->bind_param("ss", $usuario, $email);
+                $stmt->execute();
+                $stmt->store_result();
+                $rows = $stmt->num_rows;
+                
+                if($rows > 0) {
+                    
+                    if(isActivo($usuario)){
+                        
+                        $stmt->bind_result($id, $id_tipo, $token);
+                        $stmt->fetch();
+
+                        $cambio_password = cambiaPassword($pass_hash, $id, $token);
+
+                        if($cambio_password == true){
+                            
+                            $mensaje = "Contraseña actualizada";
+
+                        }else{
+
+                            $errors[] = "Hubo un error al actualizar la contraseña. Vuelva a intentar mas tarde";
+                        }
+
+                    }
+                    else {
+                
+                        $errors = 'El usuario no esta activo';
+                    }
+                } 
+                else {
+                
+                    $errors = "El nombre de usuario o correo electr&oacute;nico no existe";
+                }
+                
+				
+			
+				
+
+			
+		}
+		
+	}
+	
 ?>
-
-
-
-
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -58,45 +113,53 @@
     <script src="assets/js/html5shiv.js"></script>
     <script src="assets/js/respond.min.js"></script>
     <![endif]-->
+	
+	<script src='https://www.google.com/recaptcha/api.js'></script>
+
 </head>
 
 <body>
     <section id="login-container">
+
+    <?php echo successAlert($mensaje); ?>
 
         <div class="row">
             <div class="col-md-3" id="login-wrapper">
                 <div class="panel panel-primary animated flipInY">
                     <div class="panel-heading">
                         <h3 class="panel-title">     
-                           Inicio de Secion
+                           Nueva contraseña
+                           <div style="float:right; font-size: 85%; position: relative; top:-10px"><a id="signinlink" href="index.php">Iniciar Sesi&oacute;n</a></div>
                         </h3>      
                     </div>
                     <div class="panel-body">
-                       <p> Login.</p>
-                        <form class="form-horizontal" role="form" action="<?php $_SERVER['PHP_SELF'] ?>" method="POST" autocomplete="off">
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Email o usuario" required autofocus>
-                                    <i class="fa fa-user"></i>
-                                </div>
-                            </div>
+                    <form class="form-horizontal" role="form" action="<?php $_SERVER['PHP_SELF'] ?>" method="POST" autocomplete="off">
                             <div class="form-group">
                                <div class="col-md-12">
                                     <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
                                     <i class="fa fa-lock"></i>
-                                    <a href="recuperar_contrasena.php" class="help-block">Olvidaste tu clave?</a>
                                 </div>
                             </div>
+
+
+
                             <div class="form-group">
                                <div class="col-md-12">
-                                    <input type="submit" class="btn btn-primary btn-block" value="Iniciar sesion" >
-                                    <!--<a href="index.html" class="btn btn-primary btn-block">Iniciar sesion</a>-->
-                                    <hr />
-                                    <a href="registro.php" class="btn btn-default btn-block">¿No es un miembro? Regístrate</a>
+                                    <input type="password" class="form-control" id="con_password" name="con_password" placeholder="Confirmar Password" required>
+                                    <i class="fa fa-key"></i>
                                 </div>
                             </div>
+
+
+                            <div class="form-group">
+                               <div class="col-md-12">
+                                    <input type="submit" class="btn btn-primary btn-block" value="Finalizar" >
+                               </div>
+                            </div>
                         </form>
-                        <?php echo resultBlock($errors); ?>
+
+                        <?php echo resultBlock($errors); 
+                        ?>
                     </div>
                 </div>
             </div>

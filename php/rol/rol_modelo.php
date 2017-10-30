@@ -66,7 +66,7 @@
 					INSERT INTO tipo_usuario
 					(id_tipo, tipo, fecha_creacion, fecha_modificacion, usuario_creacion, usuario_modificacion, estado)
 					VALUES
-					(DEFAULT, '$tipo', '$fecha_creacion','$fecha_modificacion', '$usuario_creacion', '$usuario_modificacion', '$estado')
+					(DEFAULT, '$tipo', '$fecha_creacion','$fecha_modificacion', '$usuario_creacion', '$usuario_modificacion', 1)
 					";
 				$this->ejecutar_query_simple();
 			endif;
@@ -76,6 +76,10 @@
 			foreach ($datos as $campo=>$valor):
 				$$campo = $valor;
 			endforeach;
+
+			$fecha_modificacion = date('Ymd');
+			$usuario_modificacion = $_SESSION['id_usuario'];
+
 			$this->query = "
 			UPDATE tipo_usuario
 			SET tipo='$tipo',

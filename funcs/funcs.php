@@ -8,6 +8,19 @@
 			return false;
 		}		
 	}
+
+	function isNullField($var){
+
+		if(strlen(trim($var))< 1){
+
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
+
+	}
 	
 	function isEmail($email)
 	{
@@ -103,6 +116,18 @@
 			echo "</ul>";
 			echo "</div>";
 		}
+	}
+
+	function successAlert($mensaje){
+
+		if($mensaje != null || $mensaje != ''){
+
+			echo "<div class='alert alert-success'>
+			<strong>".$mensaje."
+			</div>";
+
+		}
+
 	}
 	
 	function registraUsuario($usuario, $pass_hash, $nombre, $email, $activo, $token, $tipo_usuario){
@@ -354,7 +379,7 @@
 		
 		global $mysqli;
 		
-		$stmt = $mysqli->prepare("UPDATE usuarios SET password = ?, token_password='', password_request=0 WHERE id = ? AND token_password = ?");
+		$stmt = $mysqli->prepare("UPDATE usuarios SET password = ?, token_password='', password_request=0 WHERE id = ? AND token = ?");
 		$stmt->bind_param('sis', $password, $user_id, $token);
 		
 		if($stmt->execute()){

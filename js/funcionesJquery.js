@@ -112,8 +112,19 @@ btones para cerrar las ventanas
 
 
 	$("#contenido").on("click","button.btncerrar",function(){
+
+		
 		$("#contenedor").removeClass("show");
-       	$("#contenedor").addClass("hide");
+		   $("#contenedor").addClass("hide");
+		
+	})
+
+	$("#contenido").on("click","button.btncerrarRol",function(){
+					
+			//$("#contenedor").removeClass("show");
+			//$("#contenedor").addClass("hide");
+			$("#titulo").html("Listado de Roles");
+			$( "#contenido" ).load("./php/rol/index.php");		
 	})
 
 	$("#contenido").on("click","button.btncerrar2",function(){
@@ -351,6 +362,21 @@ Botones editar icono lapiz
 	});	
 
 
+	$("#contenido").on("click","a.editarRol",function(){
+		$("#titulo").html("Editar Rol");
+		//Recupera datos del fromulario
+		var codigo = $(this).attr("codigo");
+		$.ajax({
+			type:"post",
+			url:"./php/rol/rol_editar.php",
+			data:"codigo=" + codigo,
+			dataType:"html"
+        	}) .done(function( result ) {
+        		$("#contenido").html(result);
+        	});
+	});	
+
+
 
 
 /*
@@ -379,6 +405,22 @@ Botones actualizar
 			dataType:"html"
         	}) .done(function( result ) {
         		$( "#contenido" ).load("./php/pais/index.php");
+        	});
+	});
+
+
+	$("#contenido").on("click","button#actualizarRol",function(){
+		
+		$("#titulo").html("Listado de Roles");
+        var datos=$("#frol").serialize();
+            $.ajax({
+			type:"post",
+			url:"./php/rol/rol_controlador.php",
+			data: datos,
+			dataType:"html"
+        	}) .done(function( result ) {
+				//$( "#contenido" ).load("./php/rol/index.php");
+				$( "#contenido" ).load("./php/rol/rol_controlador.php");
         	});
 	});
 

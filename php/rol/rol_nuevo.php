@@ -1,6 +1,5 @@
 <?php
     require_once('../rol/rol_modelo.php');
-    session_start();
 	$rol = new Rol();
 	
 ?>	
