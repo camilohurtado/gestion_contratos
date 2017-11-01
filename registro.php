@@ -16,7 +16,7 @@
 		
 		$activo = 0;
 		$tipo_usuario = 2;
-		$secret = '6LeG1DUUAAAAAHjPnikj8pHq0gKBj2niqpFXWhXR';//'6LcpODMUAAAAAMNsXQ3No1-ir7h4OJCbRxbHqteC';
+		$secret = '6LcpODMUAAAAAMNsXQ3No1-ir7h4OJCbRxbHqteC';
 		
 		if(!$captcha){
 			$errors[] = "Por favor verifica el captcha";
@@ -49,27 +49,10 @@
 		
 		if(count($errors) == 0)
 		{
-            $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret&response=$captcha");
-            
-            //$curlData = curl_init();
-
-            /*curl_setopt_array($curlData,
-                            [
-                                CURLOPT_URL => 'https://www.google.com/recaptcha/api/siteverify',
-                                CURLOPT_POST => true,
-                                CURLOPT_POSTFIELDS => [
-                                    'secret' => $secret,
-                                    'response' => $captcha,
-                                    'remoteip' => $_SERVER["SERVER_NAME"]//$_SERVER['REMOTE_ADDR']
-                                ],
-                                CURLOPT_RETURNTRANSFER => true
-                            ]);
-
-            $response = curl_exec($curlData);
-            curl_close($curlData);*/
-                            
+			$response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$secret&response=$captcha");
+			
 			$arr = json_decode($response, TRUE);
-            
+			
 			if($arr['success'])
 			{
 				
@@ -78,14 +61,32 @@
 				
 				$registro = registraUsuario($usuario, $pass_hash, $nombre, $email, $activo, $token, $tipo_usuario);
 				
+
+
+				$url = 'http://'.$_SERVER["SERVER_NAME"].'/contratos/activar.php?id='.$registro.'&val='.$token;
+
+
+					
+
 				if($registro > 0 )
 				{
 					
-					$url = 'http://'.$_SERVER["SERVER_NAME"].'/gestion_contratos/activar.php?id='.$registro.'&val='.$token;
+
+					echo "Para terminar el proceso de registro ingrese al siguiente link";
+					echo "<br><a href='$url' >Activacion</a>";
+					exit;				
+				
+
+
+					/*
+
+					$url = 'http://'.$_SERVER["SERVER_NAME"].'/contratosceep/activar.php?id='.$registro.'&val='.$token;
 					
 					$asunto = 'Activar Cuenta - Sistema de Usuarios';
 					$cuerpo = "Estimado $nombre: <br /><br />Para continuar con el proceso de registro, es indispensable de click en la siguiente liga <a href='$url'>Activar Cuenta</a>";
 					
+					
+
 					if(enviarEmail($email, $nombre, $asunto, $cuerpo)){
 					
 					echo "Para terminar el proceso de registro siga las instrucciones que le hemos enviado la direccion de correo electronico: $email";
@@ -96,13 +97,15 @@
 					} else {
 						$erros[] = "Error al enviar Email";
 					}
+
+					*/
 					
 					} else {
 					$errors[] = "Error al Registrar";
 				}
 				
 				} else {
-				$errors[] = 'Error al comprobar Captcha :' .$arr['success'] . ' - hostname: '.$arr['hostname'] ;
+				$errors[] = 'Error al comprobar Captcha';
 			}
 			
 		}
@@ -145,7 +148,7 @@
     <script src="assets/js/respond.min.js"></script>
     <![endif]-->
 	
-	
+	<script src='https://www.google.com/recaptcha/api.js'></script>
 
 </head>
 
@@ -209,8 +212,7 @@
 
                             <div class="form-group">
                                <div class="col-md-1">
-									<!--<div class="g-recaptcha" data-sitekey="6LcpODMUAAAAAHcGVqzlp_zm5spCYgTY3Q7CSKlk"></div>-->
-                                    <div class="g-recaptcha" data-sitekey="6LeG1DUUAAAAAN0imOmhxkmMniqEo1kGOH0qUnIk"></div>
+									<div class="g-recaptcha" data-sitekey="6LcpODMUAAAAAHcGVqzlp_zm5spCYgTY3Q7CSKlk"></div>
                                 </div>
                             </div>
 
@@ -245,7 +247,6 @@
         ga('send', 'pageview');
 
 </script>
-<script src='https://www.google.com/recaptcha/api.js'></script>
 </body>
 
 </html>

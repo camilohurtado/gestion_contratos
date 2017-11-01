@@ -9,6 +9,8 @@
 		}		
 	}
 
+
+
 	function isNullField($var){
 
 		if(strlen(trim($var))< 1){
@@ -21,6 +23,21 @@
 		}
 
 	}
+
+
+	function successAlert($mensaje){
+
+		if($mensaje != null || $mensaje != ''){
+
+			echo "<div class='alert alert-success'>
+			<strong>".$mensaje."
+			</div>";
+
+		}
+
+	}
+
+
 	
 	function isEmail($email)
 	{
@@ -116,18 +133,6 @@
 			echo "</ul>";
 			echo "</div>";
 		}
-	}
-
-	function successAlert($mensaje){
-
-		if($mensaje != null || $mensaje != ''){
-
-			echo "<div class='alert alert-success'>
-			<strong>".$mensaje."
-			</div>";
-
-		}
-
 	}
 	
 	function registraUsuario($usuario, $pass_hash, $nombre, $email, $activo, $token, $tipo_usuario){

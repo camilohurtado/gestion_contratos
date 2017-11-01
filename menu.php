@@ -28,8 +28,8 @@
 <html class="no-js">
 <!--<![endif]-->
 
-<head>
-    <meta charset="utf-8">
+<head><meta http-equiv="Content-Type" content="text/html; charset=gb18030">
+    
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Gestion de Personas</title>
     <meta name="description" content="">
@@ -53,7 +53,9 @@
     <!-- Fonts -->
     <script src="js/jquery.dataTables.min.js"></script>
     <script src="assets/js/modernizr-2.6.2.min.js"></script>
+<link rel="stylesheet" href="css/estilo.css">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
     <!--[if lt IE 9]>
     <script src="assets/js/html5shiv.js"></script>
     <script src="assets/js/respond.min.js"></script>
@@ -65,7 +67,7 @@
         <header id="header">
             <!--logo start-->
             <div class="brand">
-                <a href="index.html" class="logo"><span>CECEP</span>S6AE</a>
+                <a href="index.html" class="logo">S6AE Y S6AN</a>
             </div>
             <!--logo end-->
             <div class="toggle-navigation toggle-left">
@@ -76,40 +78,38 @@
             <div class="user-nav">
 
                 <ul>
-                    <li class="profile-photo">
-                        <img src="assets/img/avatar.png" alt="" class="img-circle">
-                    </li>
-                    
-                    <li class="dropdown settings"> <?php echo utf8_decode($row['nombre']); ?></li>                    
-                    
+                    <li class="dropdown settings"> <?php echo utf8_decode($row['nombre']); ?></li>
+
                     <li class="dropdown settings">
-                        <a href='logout.php'>Cerrar Sesion</a>
+                        <a  href='logout.php'>Cerrar Sesión</a>
                     </li>
 
                 </ul>
-                
+
             </div>
         </header>
 
         <!--sidebar left start-->
         <aside class="sidebar">
             <div id="leftside-navigation" class="nano">
-                
 
 
-            <div class="form-group" id="opciones">        
+
+            <div class="form-group" id="opciones">
                     <div class="col-sm-10">
 
                         <!--Administrador-->
                         <?php if($_SESSION['tipo_usuario']==1) { ?>
                         <ul>
-                            <li><a class="fa fa-sitemap rol" href="php/rol/index.php" role="button">  Roles</a></li>
+                            <li><a class="fa fa-sitemap roles" href="php/roles/index.php" role="button">Roles</a></li>
                             <li><a class="fa fa-building-o ciudad" href="php/ciudad/index.php" role="button"> Ciudades</a></li>
                             <li><a class="fa fa-briefcase pais" href="php/pais/index.php" role="button"> Pais</a></li>
-                            <li><a class="fa fa-suitcase empresa" href="php/empresa/index.php" role="button"> Empresa</a></li>                            
-                            <li><a class="fa fa-file-text-o" href="#" role="button"> Contratos</a></li>
+                            <li><a class="fa fa-suitcase empresa" href="php/empresa/index.php" role="button"> Empresa</a></li>
+                            <li><a class="fa fa-location-arrow sucursal" href="php/sucursal/index.php" role="button"> Sucursales</a></li>
+                            <li><a class="fa fa-location-arrow empleado" href="php/empleados/index.php" role="button"> Empleados</a></li>
+                            <li><a class="fa fa-gears" href="#" role="button"> Procesos</a></li>
+                            <li><a class="fa fa-file-text-o" href="php/gestion_contratos/index.php" role="button"> Contratos</a></li>
                             <li><a class="fa fa-arrow-circle-down" href="#" role="button"> Informes</a></li>
-
                         </ul>
                         <?php } ?>
 
@@ -124,10 +124,9 @@
                         <!--Gestor-->
                         <?php if($_SESSION['tipo_usuario']==3) { ?>
                         <ul>
-                            <li><a class="fa fa-location-arrow sucursal" href="php/sucursal/index.php" role="button"> Sucursales</a></li>                            
-                            <li><a class="fa fa-users" href="#" role="button"> Empleados</a></li>                            
+                            <li><a class="fa fa-location-arrow sucursal" href="php/sucursal/index.php" role="button"> Sucursales</a></li>
+                            <li><a class="fa fa-users" href="#" role="button"> Empleados</a></li>
                             <li><a class="fa fa-gears" href="#" role="button"> Procesos</a></li>
-                            <li><a class="fa fa-arrow-circle-down" href="#" role="button"> Proveedores</a></li>
                         </ul>
                         <?php } ?>
 
@@ -146,7 +145,7 @@
                             <li><a class="fa fa-crosshairs" href="#" role="button"> Seleccion</a></li>
                         </ul>
                         <?php } ?>
-                        
+
 
 
 
@@ -167,8 +166,8 @@
                             <li><a class="fa fa-file-text-o" href="#" role="button"> Contratos</a></li>
                         </ul>
                         <?php } ?>
-                        
-                        
+
+
                     </div>
                 </div>
 
@@ -184,25 +183,25 @@
 
                 <!--Contenido de la pagina-->
 
-            
+
             <div class="panel-body">
-             
+
         <div class="panel-group hide" id="contenedor"><div class="panel panel-primary">
             <div class="panel-heading" id="titulo"></div>
             <div class="panel-body">
-                
-                <div class="form-group" id="contenido">        
-                    
+
+                <div class="form-group" id="contenido">
+
                 </div>
-            
+
             </div>
-            
+
 
                 </div>
             </div>
         </div>
 
-          
+
 
 
                 <!--ToDo end-->
@@ -254,7 +253,7 @@
     <script src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
     <!-- jQuery UI 1.11.4 -->
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-    
+
 
     <!-- Funciones de Lógica de negocio -->
     <script src="js/funcionesJquery.js"></script>
@@ -266,7 +265,7 @@
 
 
 
-<div class="footer-bottom"> 
+<div class="footer-bottom">
 
             <div class="row">
 
@@ -274,7 +273,7 @@
 
                 <div class="copyright">
 
-                    © 2017, Elisxeneth Tovar, Edinson Ortiz, Todos los derechos reservados
+                    © 2017 Todos los derechos reservados.
 
                 </div>
 
@@ -284,14 +283,14 @@
 
                 <div class="design">
 
-                     <a href="#">S6AE </a> |  <a target="_blank" href="https://www.cecep.edu.co/">Centro Colombiano de Estudios Profecionales - Enfasis II</a>
+                     <a href="#">S6AE </a> |  <a target="_blank" href="https://www.cecep.edu.co/">Centro Colombiano de Estudios Profesionales - Enfasis II</a>
 
                 </div>
 
             </div>
 
         </div>
-    
+
 </div>
 
 </body>

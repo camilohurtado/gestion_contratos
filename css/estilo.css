@@ -1,5 +1,27 @@
 
+
 .borrar , .editar{cursor:pointer;}
 
+
+
 #contenedor {margin-top: 10px;}
+
+
+.fa.fa-trash-o {
+    color: white;
+}
+
+
+
+
+
+a:link, a:visited {
+
+    text-decoration: none;
+
+    outline: 0;
+
+    color: black;
+
+      }
 
